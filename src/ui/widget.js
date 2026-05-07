@@ -1,0 +1,130 @@
+import { fetchAccountInfo } from '../core/horizon.js';
+import { generateQrCode } from '../qr/generate.js';
+
+const DEFAULTS = {
+  amount: '',
+  asset: 'XLM',
+  network: 'testnet',
+  memo: ''
+};
+
+function resolveContainer(container) {
+  if (typeof container === 'string') {
+    return document.querySelector(container);
+  }
+
+  return container;
+}
+
+function render(shell, state) {
+  shell.innerHTML = `
+    <style>
+      :host {
+        all: initial;
+        color: #15202b;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .embedpay-widget {
+        box-sizing: border-box;
+        max-width: 320px;
+        border: 1px solid #d8e1e8;
+        border-radius: 8px;
+        padding: 16px;
+        background: #ffffff;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+      }
+
+      .embedpay-title {
+        margin: 0 0 4px;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .embedpay-meta,
+      .embedpay-status {
+        margin: 0;
+        color: #536471;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .embedpay-qr {
+        display: block;
+        width: 220px;
+        height: 220px;
+        margin: 16px auto;
+      }
+
+      .embedpay-address {
+        box-sizing: border-box;
+        width: 100%;
+        overflow-wrap: anywhere;
+        border-radius: 6px;
+        background: #f4f7f9;
+        padding: 10px;
+        color: #23313d;
+        font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+        font-size: 12px;
+      }
+
+      .embedpay-error {
+        color: #b42318;
+      }
+    </style>
+    <section class="embedpay-widget" aria-live="polite">
+      <h2 class="embedpay-title">Pay with Stellar</h2>
+      <p class="embedpay-meta">${state.amount ? `${state.amount} ${state.asset}` : state.asset} on ${state.network}</p>
+      ${
+        state.error
+          ? `<p class="embedpay-status embedpay-error">${state.error}</p>`
+          : `<p class="embedpay-status">${state.status}</p>`
+      }
+      ${state.qr ? `<img class="embedpay-qr" src="${state.qr}" alt="Stellar payment QR code">` : ''}
+      <p class="embedpay-address">${state.destination}</p>
+    </section>
+  `;
+}
+
+export async function mountPaymentWidget(config) {
+  const options = { ...DEFAULTS, ...config };
+  const container = resolveContainer(options.container);
+
+  if (!container) {
+    throw new Error('EmbedPay container was not found.');
+  }
+
+  if (!options.destination) {
+    throw new Error('EmbedPay destination is required.');
+  }
+
+  const shadowRoot = container.attachShadow({ mode: 'open' });
+
+  render(shadowRoot, {
+    ...options,
+    status: 'Preparing payment request...'
+  });
+
+  try {
+    await fetchAccountInfo(options.destination, { network: options.network });
+    const qr = await generateQrCode(options.destination, options);
+
+    render(shadowRoot, {
+      ...options,
+      qr: qr.dataUrl,
+      status: 'Scan the QR code to send payment.'
+    });
+
+    options.onReady?.({ accountId: options.destination, paymentUri: qr.uri });
+    return shadowRoot;
+  } catch (error) {
+    render(shadowRoot, {
+      ...options,
+      status: '',
+      error: error.message
+    });
+
+    options.onError?.(error);
+    throw error;
+  }
+}

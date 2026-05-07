@@ -1,0 +1,31 @@
+{
+  "name": "embedpay",
+  "version": "0.1.0",
+  "description": "Drop-in Stellar payment widget for any website.",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run --passWithNoTests"
+  },
+  "keywords": [
+    "stellar",
+    "payments",
+    "widget",
+    "horizon"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "stellar-sdk": "^13.3.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "vitest": "^2.1.4"
+  }
+}
