@@ -8,6 +8,12 @@ const DEFAULTS = {
   memo: ''
 };
 
+/**
+ * Resolve a container selector or element to a DOM element.
+ *
+ * @param {string | Element | null | undefined} container - CSS selector or existing DOM element.
+ * @returns {Element | null | undefined} Matching DOM element, the provided element, or null when a selector does not match.
+ */
 function resolveContainer(container) {
   if (typeof container === 'string') {
     return document.querySelector(container);
@@ -16,6 +22,21 @@ function resolveContainer(container) {
   return container;
 }
 
+/**
+ * Render the payment widget into its shadow root.
+ *
+ * @param {ShadowRoot} shell - Shadow root that owns the widget markup.
+ * @param {{
+ *   amount?: string | number,
+ *   asset: string,
+ *   network: string,
+ *   destination: string,
+ *   status?: string,
+ *   error?: string,
+ *   qr?: string
+ * }} state - Current widget display state.
+ * @returns {void}
+ */
 function render(shell, state) {
   shell.innerHTML = `
     <style>
@@ -86,6 +107,22 @@ function render(shell, state) {
   `;
 }
 
+/**
+ * Mount an EmbedPay Stellar payment widget into a DOM container.
+ *
+ * @param {{
+ *   container: string | Element,
+ *   destination: string,
+ *   amount?: string | number,
+ *   asset?: string,
+ *   network?: 'mainnet' | 'testnet',
+ *   memo?: string,
+ *   onReady?: (result: {accountId: string, paymentUri: string}) => void,
+ *   onError?: (error: Error) => void
+ * }} config - Widget configuration.
+ * @returns {Promise<ShadowRoot>} Shadow root containing the mounted widget.
+ * @throws {Error} When the container cannot be found, the destination is missing, or account/QR generation fails.
+ */
 export async function mountPaymentWidget(config) {
   const options = { ...DEFAULTS, ...config };
   const container = resolveContainer(options.container);
