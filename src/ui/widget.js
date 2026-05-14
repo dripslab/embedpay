@@ -33,6 +33,7 @@ function resolveContainer(container) {
  *   destination: string,
  *   status?: string,
  *   error?: string,
+ *   loading?: boolean,
  *   qr?: string
  * }} state - Current widget display state.
  * @returns {void}
@@ -70,6 +71,29 @@ function render(shell, state) {
         line-height: 1.45;
       }
 
+      .embedpay-status-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .embedpay-spinner {
+        box-sizing: border-box;
+        flex: 0 0 auto;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #d8e1e8;
+        border-top-color: #1d9bf0;
+        border-radius: 50%;
+        animation: embedpay-spin 0.8s linear infinite;
+      }
+
+      @keyframes embedpay-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
       .embedpay-qr {
         display: block;
         width: 220px;
@@ -99,7 +123,10 @@ function render(shell, state) {
       ${
         state.error
           ? `<p class="embedpay-status embedpay-error">${state.error}</p>`
-          : `<p class="embedpay-status">${state.status}</p>`
+          : `<div class="embedpay-status-row">
+              ${state.loading ? '<span class="embedpay-spinner" aria-hidden="true"></span>' : ''}
+              <p class="embedpay-status">${state.status}</p>
+            </div>`
       }
       ${state.qr ? `<img class="embedpay-qr" src="${state.qr}" alt="Stellar payment QR code">` : ''}
       <p class="embedpay-address">${state.destination}</p>
@@ -139,7 +166,8 @@ export async function mountPaymentWidget(config) {
 
   render(shadowRoot, {
     ...options,
-    status: 'Preparing payment request...'
+    status: 'Preparing payment request...',
+    loading: false
   });
 
   try {
@@ -149,7 +177,8 @@ export async function mountPaymentWidget(config) {
     render(shadowRoot, {
       ...options,
       qr: qr.dataUrl,
-      status: 'Scan the QR code to send payment.'
+      status: 'Waiting for payment confirmation...',
+      loading: true
     });
 
     options.onReady?.({ accountId: options.destination, paymentUri: qr.uri });
@@ -158,6 +187,7 @@ export async function mountPaymentWidget(config) {
     render(shadowRoot, {
       ...options,
       status: '',
+      loading: false,
       error: error.message
     });
 
