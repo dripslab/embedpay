@@ -6,7 +6,7 @@
     <title>EmbedPay - Drop-in Stellar Payments</title>
     <style>
       :root {
-        --bg-primary: #0a0a0f;
+        --bg-primary: linear-gradient(180deg, #0a0a1a 0%, #000000 100%);
         --bg-secondary: #12121a;
         --bg-card: #1a1a25;
         --text-primary: #ffffff;
@@ -14,6 +14,7 @@
         --purple-primary: #8b5cf6;
         --purple-secondary: #a78bfa;
         --purple-dark: #6d28d9;
+        --purple-glow: #7c3aed;
         --accent: #c084fc;
         --border: #2a2a3a;
         --gradient: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c084fc 100%);
@@ -31,6 +32,45 @@
         color: var(--text-primary);
         line-height: 1.6;
         overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+      }
+
+      /* Dot Grid Pattern Overlay */
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 24px 24px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Ambient Light Blobs */
+      .ambient-blob {
+        position: fixed;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: var(--purple-glow);
+        opacity: 0.1;
+        filter: blur(120px);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .ambient-blob.top-left {
+        top: -100px;
+        left: -100px;
+      }
+
+      .ambient-blob.bottom-right {
+        bottom: -100px;
+        right: -100px;
       }
 
       a {
@@ -46,6 +86,8 @@
         padding: 20px 40px;
         max-width: 1200px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
       }
 
       .logo {
@@ -78,6 +120,23 @@
         padding: 100px 20px 80px;
         max-width: 900px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Hero Radial Glow */
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 900px;
+        height: 900px;
+        background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+        opacity: 0.1;
+        pointer-events: none;
+        z-index: -1;
       }
 
       .hero h1 {
@@ -119,6 +178,8 @@
         padding: 80px 20px;
         max-width: 1200px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
       }
 
       .section-title {
@@ -236,6 +297,8 @@
         padding: 100px 20px;
         max-width: 1200px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
       }
 
       .features-grid {
@@ -285,6 +348,8 @@
         padding: 100px 20px;
         max-width: 900px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
       }
 
       .code-block {
@@ -390,6 +455,8 @@
     </style>
   </head>
   <body>
+    <div class="ambient-blob top-left"></div>
+    <div class="ambient-blob bottom-right"></div>
     <nav>
       <div class="logo">EmbedPay</div>
       <div class="nav-links">
