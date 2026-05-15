@@ -4,20 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EmbedPay - Drop-in Stellar Payments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
       :root {
-        --bg-primary: linear-gradient(180deg, #0a0a1a 0%, #000000 100%);
-        --bg-secondary: #12121a;
-        --bg-card: #1a1a25;
-        --text-primary: #ffffff;
-        --text-secondary: #a0a0b0;
-        --purple-primary: #8b5cf6;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f9fafb;
+        --bg-card: #ffffff;
+        --text-primary: #0f0a1e;
+        --text-secondary: #6b7280;
+        --purple-primary: #7c3aed;
         --purple-secondary: #a78bfa;
         --purple-dark: #6d28d9;
         --purple-glow: #7c3aed;
-        --accent: #c084fc;
-        --border: #2a2a3a;
-        --gradient: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c084fc 100%);
+        --accent: #7c3aed;
+        --border: #e5e7eb;
+        --gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
+        --dot-color: #c4b5fd;
       }
 
       * {
@@ -36,41 +40,21 @@
         min-height: 100vh;
       }
 
-      /* Dot Grid Pattern Overlay */
-      body::before {
-        content: '';
+      /* Premium Dot Grid Pattern with SVG */
+      .dot-grid {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-        background-size: 24px 24px;
         pointer-events: none;
         z-index: 0;
+        opacity: 1;
       }
 
-      /* Ambient Light Blobs */
-      .ambient-blob {
-        position: fixed;
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        background: var(--purple-glow);
-        opacity: 0.1;
-        filter: blur(120px);
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      .ambient-blob.top-left {
-        top: -100px;
-        left: -100px;
-      }
-
-      .ambient-blob.bottom-right {
-        bottom: -100px;
-        right: -100px;
+      .dot-grid svg {
+        width: 100%;
+        height: 100%;
       }
 
       a {
@@ -93,10 +77,7 @@
       .logo {
         font-size: 24px;
         font-weight: 700;
-        background: var(--gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: var(--purple-primary);
       }
 
       .nav-links {
@@ -107,11 +88,12 @@
       .nav-links a {
         color: var(--text-secondary);
         font-size: 14px;
+        font-weight: 500;
         transition: color 0.3s;
       }
 
       .nav-links a:hover {
-        color: var(--text-primary);
+        color: var(--purple-primary);
       }
 
       /* Hero Section */
@@ -124,29 +106,12 @@
         z-index: 1;
       }
 
-      /* Hero Radial Glow */
-      .hero::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 900px;
-        height: 900px;
-        background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
-        opacity: 0.1;
-        pointer-events: none;
-        z-index: -1;
-      }
-
       .hero h1 {
         font-size: clamp(36px, 6vw, 64px);
         font-weight: 800;
         margin-bottom: 20px;
-        background: var(--gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
       }
 
       .hero p {
@@ -158,19 +123,20 @@
       .cta-button {
         display: inline-block;
         padding: 14px 32px;
-        background: var(--gradient);
+        background: var(--purple-primary);
         color: white;
         border-radius: 8px;
         font-weight: 600;
         font-size: 16px;
-        transition: transform 0.3s, box-shadow 0.3s;
+        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
         border: none;
         cursor: pointer;
       }
 
       .cta-button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
+        background: var(--purple-dark);
+        box-shadow: 0 10px 40px rgba(124, 58, 237, 0.3);
       }
 
       /* Live Demo Section */
@@ -187,6 +153,8 @@
         font-size: 32px;
         font-weight: 700;
         margin-bottom: 50px;
+        color: var(--text-primary);
+        letter-spacing: -0.01em;
       }
 
       .demo-widget {
@@ -196,6 +164,7 @@
         padding: 40px;
         max-width: 500px;
         margin: 0 auto;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
       }
 
       .widget-header {
@@ -210,6 +179,7 @@
       .widget-title {
         font-size: 18px;
         font-weight: 600;
+        color: var(--text-primary);
       }
 
       .payment-status {
@@ -218,6 +188,7 @@
         gap: 8px;
         font-size: 14px;
         color: var(--text-secondary);
+        font-weight: 500;
       }
 
       .status-dot {
@@ -236,7 +207,8 @@
       .qr-code {
         width: 200px;
         height: 200px;
-        background: white;
+        background: #fafafa;
+        border: 1px solid var(--border);
         border-radius: 12px;
         margin: 0 auto 30px;
         display: flex;
@@ -269,19 +241,20 @@
       }
 
       .copy-button {
-        background: var(--purple-dark);
+        background: var(--purple-primary);
         color: white;
         border: none;
         padding: 8px 16px;
         border-radius: 6px;
         font-size: 12px;
+        font-weight: 500;
         cursor: pointer;
         transition: background 0.3s;
         white-space: nowrap;
       }
 
       .copy-button:hover {
-        background: var(--purple-primary);
+        background: var(--purple-dark);
       }
 
       .payment-amount {
@@ -289,7 +262,7 @@
         margin-top: 20px;
         font-size: 24px;
         font-weight: 700;
-        color: var(--accent);
+        color: var(--purple-primary);
       }
 
       /* Features Section */
@@ -312,12 +285,14 @@
         border: 1px solid var(--border);
         border-radius: 12px;
         padding: 30px;
-        transition: transform 0.3s, border-color 0.3s;
+        transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
       }
 
       .feature-card:hover {
         transform: translateY(-5px);
         border-color: var(--purple-primary);
+        box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
       }
 
       .feature-icon {
@@ -336,6 +311,7 @@
         font-size: 20px;
         font-weight: 600;
         margin-bottom: 12px;
+        color: var(--text-primary);
       }
 
       .feature-card p {
@@ -353,7 +329,7 @@
       }
 
       .code-block {
-        background: var(--bg-secondary);
+        background: #f8fafc;
         border: 1px solid var(--border);
         border-radius: 12px;
         padding: 30px;
@@ -368,11 +344,11 @@
       }
 
       .code-block code {
-        color: #e0e0e0;
+        color: #374151;
       }
 
       .code-block .tag {
-        color: var(--accent);
+        color: var(--purple-primary);
       }
 
       .code-block .attr {
@@ -380,12 +356,12 @@
       }
 
       .code-block .string {
-        color: #4ade80;
+        color: #059669;
       }
 
       /* Footer */
       footer {
-        background: var(--bg-secondary);
+        background: #fafafa;
         border-top: 1px solid var(--border);
         padding: 40px 20px;
         margin-top: 80px;
@@ -413,7 +389,7 @@
       }
 
       .footer-links a:hover {
-        color: var(--text-primary);
+        color: var(--purple-primary);
       }
 
       .drips-badge {
@@ -455,8 +431,22 @@
     </style>
   </head>
   <body>
-    <div class="ambient-blob top-left"></div>
-    <div class="ambient-blob bottom-right"></div>
+    <div class="dot-grid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <pattern id="dotPattern" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+          <circle cx="14" cy="14" r="1.4" fill="#c4b5fd" />
+        </pattern>
+        <rect width="100%" height="100%" fill="url(#dotPattern)" />
+        <defs>
+          <radialGradient id="centerFade" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="white" stop-opacity="1" />
+            <stop offset="35%" stop-color="white" stop-opacity="0.95" />
+            <stop offset="100%" stop-color="white" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#centerFade)" />
+      </svg>
+    </div>
     <nav>
       <div class="logo">EmbedPay</div>
       <div class="nav-links">
