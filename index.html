@@ -40,23 +40,6 @@
         min-height: 100vh;
       }
 
-      /* Premium Dot Grid Pattern with SVG */
-      .dot-grid {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        pointer-events: none;
-        z-index: 0;
-        opacity: 1;
-      }
-
-      .dot-grid svg {
-        width: 100%;
-        height: 100%;
-      }
-
       a {
         color: inherit;
         text-decoration: none;
@@ -431,22 +414,6 @@
     </style>
   </head>
   <body>
-    <div class="dot-grid">
-      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-        <pattern id="dotPattern" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-          <circle cx="14" cy="14" r="1.4" fill="#c4b5fd" />
-        </pattern>
-        <rect width="100%" height="100%" fill="url(#dotPattern)" />
-        <defs>
-          <radialGradient id="centerFade" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="white" stop-opacity="1" />
-            <stop offset="35%" stop-color="white" stop-opacity="0.95" />
-            <stop offset="100%" stop-color="white" stop-opacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#centerFade)" />
-      </svg>
-    </div>
     <nav>
       <div class="logo">EmbedPay</div>
       <div class="nav-links">
